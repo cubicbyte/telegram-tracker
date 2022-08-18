@@ -23,4 +23,4 @@ jobs:
           git pull origin master
           cd client
           mv config.yml.example config.yml
-          echo ${{ secrets.CLIENT_CONFIG }} > config.yml
+          echo '${{ secrets.CLIENT_CONFIG }}' > config.yml
