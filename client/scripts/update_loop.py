@@ -10,7 +10,7 @@ from src.utils.load_config import load_config
 from src.database import Database
 
 config = load_config('config.yml')
-db = Database(**config['mysql'])
+db = Database(**config['database'])
 
 while True:
 
