@@ -19,8 +19,16 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          cd Telegram-status-collector
+          # Pull changes
+          cd ~/Telegram-status-collector
           git pull origin master
-          cd client
-          mv config.yml.example config.yml
-          echo '${{ secrets.CLIENT_CONFIG }}' > config.yml
+          
+          # Deploy telegram client
+          mv ./client/config.yml.example ./client/config.yml
+          echo '${{ secrets.CLIENT_CONFIG }}' > ./client/config.yml
+          
+          pip install -r ./client/requirements.txt
+          python ./client/tools/setup-db.py
+          
+          tmux new -d 'python ./client/scripts/update_loop.py'
+          tmux new -d 'python ./client/main.py'
