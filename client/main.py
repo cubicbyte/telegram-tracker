@@ -18,9 +18,8 @@ init_dirs(cwd)
 
 logging.basicConfig(
     level=logging.INFO,
-    filename='logs/debug.log',
-    format='%(asctime)s [%(levelname)s] - %(message)s',
-    filemode='w'
+    filename=os.path.join(cwd, 'logs/debug.log'),
+    format='%(asctime)s [%(levelname)s] - %(message)s'
 )
 
 logging.info('Starting application')
