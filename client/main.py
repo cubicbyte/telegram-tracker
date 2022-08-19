@@ -1,4 +1,4 @@
-import os.path
+import os
 import time
 import logging
 
@@ -12,6 +12,7 @@ from src.user_control import UserControl
 
 
 cwd = os.path.dirname(__file__)
+os.chdir(cwd)
 config = load_config(os.path.join(cwd, 'config.yml'))
 
 init_dirs(cwd)

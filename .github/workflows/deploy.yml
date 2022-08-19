@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Testing server ssh connection
+    - name: Deploying
       uses: appleboy/ssh-action@master
 
       with:
@@ -19,16 +19,19 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
+          # Stop server
+          screen -X -S Telegram-status-collector.client quit
+          screen -X -S Telegram-status-collector.client.update-loop quit
+
           # Pull changes
           cd ~/Telegram-status-collector
           git pull origin master
           
           # Deploy telegram client
-          mv ./client/config.yml.example ./client/config.yml
-          echo '${{ secrets.CLIENT_CONFIG }}' > ./client/config.yml
+          echo '${{ secrets.CLIENT_CONFIG }}' > ~/Telegram-status-collector/client/config.yml
           
-          pip install -r ./client/requirements.txt
-          python ./client/tools/setup-db.py
+          pip install -r ~/Telegram-status-collector/client/requirements.txt
+          python ~/Telegram-status-collector/client/tools/setup-db.py
           
-          tmux new -d 'python ./client/scripts/update_loop.py'
-          tmux new -d 'python ./client/main.py'
+          screen -S Telegram-status-collector.client -d -m python ~/Telegram-status-collector/client/main.py
+          screen -S Telegram-status-collector.client.update-loop -d -m python ~/Telegram-status-collector/client/scripts/update_loop.py
