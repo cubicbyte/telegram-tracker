@@ -19,7 +19,7 @@ init_dirs(cwd)
 logging.basicConfig(
     level=logging.INFO,
     filename=os.path.join(cwd, 'logs/debug.log'),
-    filenode='a',
+    filemode='a',
     format='%(asctime)s [%(levelname)s] - %(message)s'
 )
 
