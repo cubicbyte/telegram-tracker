@@ -27,7 +27,7 @@ logging.basicConfig(
 logging.info('Starting application')
 
 db = Database(**config['database'])
-client = TelegramClient('sessions/Angron42', config['telegram']['api-id'], config['telegram']['api-hash'])
+client = TelegramClient('sessions/Telegram-status-collector', config['telegram']['api-id'], config['telegram']['api-hash'])
 user_control = UserControl(db)
 
 @client.on(events.UserUpdate)
@@ -35,11 +35,10 @@ async def user_update_handler(event):
     if not isinstance(event.original_update, types.UpdateUserStatus):
         return
 
-    user_id = event.original_update.user_id
     is_online = isinstance(event.status, types.UserStatusOnline)
 
     user_control.set_status(
-        user_id,
+        event.sender_id,
         is_online,
         event.status.expires.astimezone(tz=None) if is_online else None
     )
