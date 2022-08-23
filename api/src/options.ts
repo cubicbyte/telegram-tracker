@@ -3,12 +3,6 @@ import { UserAuthParams } from 'telegram/client/auth'
 import { StoreSession } from 'telegram/sessions'
 import { ConnectionOptions } from 'mysql2'
 
-export const serverOptions: ServerOptions = {
-    httpPort: Number(process.env.SERVER_HTTP_PORT),
-    httpsPort: Number(process.env.SERVER_HTTPS_PORT),
-    httpsEnabled: process.env.SERVER_HTTPS_ENABLED === 'true'
-}
-
 export const databaseOptions: ConnectionOptions = {
     database: process.env.DATABASE_NAME,
     user: process.env.DATABASE_USER,
