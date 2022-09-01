@@ -3,7 +3,7 @@
 
 
 # MySQL database config
-mysql:
+database:
   database: telegram
   user: root
   password: p@ssw0rd
