@@ -1,6 +1,6 @@
 # Main libraries
-telethon == 1.24.0
-mysql-connector-python == 8.0.28
+telethon == 1.25.4
+mysql-connector-python == 8.0.31
 
 # Utils
 PyYAML == 6.0

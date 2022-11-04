@@ -33,5 +33,5 @@ jobs:
           pip install -r ~/Telegram-status-collector/client/requirements.txt
           python ~/Telegram-status-collector/client/tools/setup-db.py
           
-          screen -S Telegram-status-collector.client -d -m python ~/Telegram-status-collector/client/main.py
+          screen -S Telegram-status-collector.client -d -m python ~/Telegram-status-collector/client
           screen -S Telegram-status-collector.client.update-loop -d -m python ~/Telegram-status-collector/client/scripts/update_loop.py
