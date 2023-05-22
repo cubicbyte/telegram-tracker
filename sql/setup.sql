@@ -24,7 +24,7 @@ CREATE TABLE users (
 
 
 CREATE PROCEDURE updateUser (
-    user_id int
+    user_id bigint
 )
 BEGIN
 
@@ -59,7 +59,7 @@ END;
 
 
 CREATE PROCEDURE handleUserUpdate (
-    user_id int,
+    user_id bigint,
     state bool,
     time timestamp,
     expires timestamp,
