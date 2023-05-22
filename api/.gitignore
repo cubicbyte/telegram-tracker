@@ -1,6 +1,0 @@
-/dev
-/sessions
-/dist
-/node_modules
-/certs/*
-.env
