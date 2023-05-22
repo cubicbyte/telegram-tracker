@@ -32,8 +32,8 @@ async def handle_user_update(event: events.userupdate.UserUpdate.Event):
 
     _user = await client.get_entity(event.original_update.user_id)
     is_online = isinstance(event.original_update.status, UserStatusOnline)
-    time = datetime.now() if is_online else event.original_update.status.was_online
-    expires = event.original_update.status.expires if is_online else None
+    time = datetime.now() if is_online else event.original_update.status.was_online.astimezone(tz=None)
+    expires = event.original_update.status.expires.astimezone(tz=None) if is_online else None
 
     user = User(
         id=_user.id,
