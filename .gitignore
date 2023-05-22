@@ -1,2 +1,10 @@
-*.code-workspace
-/node_modules
+config.yml
+
+**/__pycache__
+*.log
+
+/sessions
+/logs
+
+workspace.code-workspace
+/dev
