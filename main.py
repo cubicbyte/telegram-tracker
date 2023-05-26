@@ -1,8 +1,9 @@
 import os
 import telethon
+from time import sleep
 from datetime import datetime
 from telethon import events
-from telethon.types import UpdateUserStatus, UserStatusOnline
+from telethon import types
 from dotenv import load_dotenv
 from database import MySQLDatabase, User
 
@@ -27,12 +28,13 @@ _log_user_updates = os.getenv('LOG_USER_UPDATES', 'false').lower() == 'true'
 
 @client.on(update_event)
 async def handle_user_update(event: events.userupdate.UserUpdate.Event):
-    if not isinstance(event.original_update, UpdateUserStatus):
+    if not isinstance(event.original_update, types.UpdateUserStatus):
         return
 
     _user = await client.get_entity(event.original_update.user_id)
-    is_online = isinstance(event.original_update.status, UserStatusOnline)
-    time = datetime.now() if is_online else event.original_update.status.was_online.astimezone(tz=None)
+    is_online = isinstance(event.original_update.status, types.UserStatusOnline)
+    is_known = is_online or isinstance(event.original_update.status, types.UserStatusOffline)
+    time = datetime.now() if is_online or not is_known else event.original_update.status.was_online.astimezone(tz=None)
     expires = event.original_update.status.expires.astimezone(tz=None) if is_online else None
 
     user = User(
@@ -61,7 +63,11 @@ def log_user_update(user: User):
 
 if __name__ == '__main__':
     with client:
-        try:
-            client.run_until_disconnected()
-        except (KeyboardInterrupt, SystemExit):
-            pass
+        while True:
+            try:
+                client.run_until_disconnected()
+            except (KeyboardInterrupt, SystemExit):
+                pass
+            except Exception as e:
+                print(e)
+                sleep(5)
