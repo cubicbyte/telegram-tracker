@@ -26,6 +26,9 @@ def setup(db: MySQLDatabase):
 
 if __name__ == '__main__':
     import os
+    import dotenv
+
+    dotenv.load_dotenv()
 
     setup(MySQLDatabase(
         host=os.getenv('DB_HOST') or input('DB_HOST: '),
