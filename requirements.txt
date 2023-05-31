@@ -1,3 +1,4 @@
 telethon
 python-dotenv
 mysql-connector-python
+emoji

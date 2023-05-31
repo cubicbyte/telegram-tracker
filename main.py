@@ -1,4 +1,5 @@
 import os
+import emoji
 import telethon
 from time import sleep
 from datetime import datetime
@@ -24,6 +25,7 @@ else:
 client = telethon.TelegramClient('status-collector', int(os.getenv('API_ID')), os.getenv('API_HASH'))
 update_event = events.UserUpdate()
 _log_user_updates = os.getenv('LOG_USER_UPDATES', 'false').lower() == 'true'
+_escape_emojis = os.getenv('ESCAPE_EMOJIS', 'false').lower() == 'true'
 
 
 @client.on(update_event)
@@ -37,14 +39,21 @@ async def handle_user_update(event: events.userupdate.UserUpdate.Event):
     time = datetime.now() if is_online or not is_known else event.original_update.status.was_online.astimezone(tz=None)
     expires = event.original_update.status.expires.astimezone(tz=None) if is_online else None
 
+    if _escape_emojis:
+        first_name = emoji.demojize(_user.first_name)
+        last_name = emoji.demojize(_user.last_name) if _user.last_name else None
+    else:
+        first_name = _user.first_name
+        last_name = _user.last_name
+
     user = User(
         id=_user.id,
         status_online=is_online,
         status_time=time,
         status_expires=expires,
         username=_user.username,
-        first_name=_user.first_name,
-        last_name=_user.last_name,
+        first_name=first_name,
+        last_name=last_name,
         phone=_user.phone,
     )
 
@@ -67,7 +76,7 @@ if __name__ == '__main__':
             try:
                 client.run_until_disconnected()
             except (KeyboardInterrupt, SystemExit):
-                pass
+                break
             except Exception as e:
                 print(e)
                 sleep(5)
