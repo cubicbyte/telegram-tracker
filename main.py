@@ -75,8 +75,6 @@ if __name__ == '__main__':
         while True:
             try:
                 client.run_until_disconnected()
-            except (KeyboardInterrupt, SystemExit):
-                break
             except Exception as e:
                 print(e)
                 sleep(5)

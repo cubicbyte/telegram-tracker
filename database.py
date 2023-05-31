@@ -1,4 +1,3 @@
-import csv
 from abc import ABC, abstractmethod
 from datetime import datetime
 from dataclasses import dataclass, fields
@@ -63,15 +62,15 @@ class MySQLDatabase(BaseDatabase):
         self.connection = connect(*args, **kwargs)
 
     def handle_user_update(self, user: User):
-        cur = self.connection.cursor()
-        cur.callproc('handleUserUpdate', [*user])
+        with self.connection.cursor() as cur:
+            cur.callproc('handleUserUpdate', [*user])
         self.connection.commit()
 
     def get_user(self, user_id: int) -> User | None:
-        cur = self.connection.cursor()
-        cur.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+        with self.connection.cursor() as cur:
+            cur.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+            res = cur.fetchone()
 
-        res = cur.fetchone()
         if res is None:
             return None
 
