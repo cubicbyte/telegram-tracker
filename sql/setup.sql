@@ -14,6 +14,7 @@ CREATE INDEX updates_time ON updates(time);
 # User updates
 CREATE TABLE user_updates (
     id bigint,
+    time timestamp DEFAULT CURRENT_TIMESTAMP,
     username varchar(32),
     first_name varchar(255),
     last_name varchar(255),
@@ -124,9 +125,6 @@ BEGIN
     # If user exists, handle update
     ELSE
 
-        # Update expired status
-        CALL updateUser(user_id);
-
         SELECT status_online
         INTO @status
         FROM users
@@ -170,8 +168,6 @@ BEGIN
         END IF;
 
     END IF;
-
-    CALL saveUserUpdate(user_id);
 
 END;
 

@@ -63,7 +63,9 @@ class MySQLDatabase(BaseDatabase):
 
     def handle_user_update(self, user: User):
         with self.connection.cursor() as cur:
+            cur.callproc('updateUser', (user.id,))
             cur.callproc('handleUserUpdate', [*user])
+            cur.callproc('saveUserUpdate', (user.id,))
         self.connection.commit()
 
     def get_user(self, user_id: int) -> User | None:
