@@ -214,3 +214,38 @@ BEGIN
     END IF;
 
 END;
+
+
+
+# Get user online time for given time period in miliseconds
+CREATE FUNCTION getUserOnlineTime(
+    user_id bigint,
+    from_date datetime,
+    to_date datetime
+)
+RETURNS int
+READS SQL DATA
+BEGIN
+    DECLARE total_sum int;
+
+    SELECT SUM(diff) INTO total_sum
+    FROM (
+        SELECT UNIX_TIMESTAMP(end_time) - UNIX_TIMESTAMP(start_time) AS diff
+        FROM (
+            SELECT time AS start_time,
+                LEAD(time) OVER (PARTITION BY id ORDER BY time) AS end_time,
+                state
+            FROM (
+                SELECT time,
+                    CASE WHEN @prev_state = state THEN @prev_state := @prev_state ELSE @prev_state := state END AS state,
+                    id
+                FROM updates, (SELECT @prev_state := -1) AS init
+                WHERE id = user_id AND time BETWEEN from_date AND to_date
+                ORDER BY time
+            ) AS subquery
+        ) AS subquery2
+        WHERE state = 1
+    ) AS sums;
+
+    RETURN total_sum;
+END;
