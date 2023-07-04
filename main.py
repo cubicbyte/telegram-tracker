@@ -71,10 +71,13 @@ def log_user_update(user: User):
 
 
 if __name__ == '__main__':
-    with client:
-        while True:
-            try:
+    while True:
+        try:
+            with client:
                 client.run_until_disconnected()
-            except Exception as e:
-                print(e)
-                sleep(5)
+        except (KeyboardInterrupt, SystemExit):
+            print('Exiting...')
+            break
+        except Exception as e:
+            print(e)
+            sleep(30)
