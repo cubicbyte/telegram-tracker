@@ -189,7 +189,8 @@ BEGIN
     SELECT username, first_name, last_name, phone_number
     INTO @old_username, @old_first_name, @old_last_name, @old_phone_number
     FROM user_updates
-    WHERE id = user_id;
+    WHERE id = user_id
+    ORDER BY time DESC LIMIT 1;
 
     # Save user update if some user data field has changed
     IF NOT (@username <=> @old_username
