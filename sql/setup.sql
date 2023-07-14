@@ -1,5 +1,5 @@
 
-# User status updates
+-- User status updates
 CREATE TABLE updates (
     id bigint,
     state bool,
@@ -11,7 +11,7 @@ CREATE INDEX updates_time ON updates(time);
 
 
 
-# User updates
+-- User updates
 CREATE TABLE user_updates (
     id bigint,
     time timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -25,7 +25,7 @@ CREATE INDEX user_updates_id ON user_updates(id);
 
 
 
-# Users
+-- Users
 CREATE TABLE users (
     id bigint PRIMARY KEY,
     status_online bool,
@@ -39,7 +39,7 @@ CREATE TABLE users (
 
 
 
-# Update user status to offline if it has expired
+-- Update user status to offline if it has expired
 CREATE PROCEDURE updateUser (
     user_id bigint
 )
@@ -50,7 +50,7 @@ BEGIN
     FROM users
     WHERE id = user_id;
 
-    # If online status expired, set to offline
+    -- If online status expired, set to offline
     IF @status = 1 AND @expires < NOW() THEN
         UPDATE users
         SET status_online = 0,
@@ -74,7 +74,7 @@ END;
 
 
 
-# Main procedure for handling user updates
+-- Main procedure for handling user updates
 CREATE PROCEDURE handleUserUpdate (
     user_id bigint,
     state bool,
@@ -87,7 +87,7 @@ CREATE PROCEDURE handleUserUpdate (
 )
 BEGIN
 
-    # If user does not exist, create new user
+    -- If user does not exist, create new user
     IF NOT EXISTS(SELECT id FROM users WHERE id = user_id) THEN
 
         INSERT INTO users (
@@ -122,7 +122,7 @@ BEGIN
             time
         );
 
-    # If user exists, handle update
+    -- If user exists, handle update
     ELSE
 
         SELECT status_online
@@ -132,7 +132,7 @@ BEGIN
 
         IF @status = state THEN
             IF state = 1 THEN
-                # Renew status expiration time
+                -- Renew status expiration time
                 UPDATE users
                 SET status_expires = expires
                 WHERE id = user_id;
@@ -173,26 +173,26 @@ END;
 
 
 
-# Save user data updates (name, phone number, ...)
+-- Save user data updates (name, phone number, ...)
 CREATE PROCEDURE saveUserUpdate (
     user_id bigint
 )
 BEGIN
 
-    # Get new user data
+    -- Get new user data
     SELECT username, first_name, last_name, phone_number
     INTO @username, @first_name, @last_name, @phone_number
     FROM users
     WHERE id = user_id;
 
-    # Get old user data
+    -- Get old user data
     SELECT username, first_name, last_name, phone_number
     INTO @old_username, @old_first_name, @old_last_name, @old_phone_number
     FROM user_updates
     WHERE id = user_id
     ORDER BY time DESC LIMIT 1;
 
-    # Save user update if some user data field has changed
+    -- Save user update if some user data field has changed
     IF NOT (@username <=> @old_username
         AND @first_name <=> @old_first_name
         AND @last_name <=> @old_last_name
@@ -218,7 +218,7 @@ END;
 
 
 
-# Get user online time for given time period in miliseconds
+-- Get user online time for given time period in miliseconds
 CREATE FUNCTION getUserOnlineTime(
     user_id bigint,
     from_date datetime,
