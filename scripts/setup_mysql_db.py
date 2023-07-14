@@ -4,12 +4,14 @@ import sys
 from os.path import dirname, abspath
 sys.path.append(dirname(dirname(abspath(__file__))))
 
+import os
 
 from database import MySQLDatabase
 
 
 def setup(db: MySQLDatabase):
-    setup_file = os.path.join(os.path.dirname(__file__), '..', 'sql', 'setup.sql')
+    setup_file = os.path.join(os.path.dirname(__file__), '..', 'sql', 'setup-mysql.sql')
+
     with open(setup_file) as fp:
         setup_sql = fp.read()
 
@@ -25,9 +27,7 @@ def setup(db: MySQLDatabase):
 
 
 if __name__ == '__main__':
-    import os
     import dotenv
-
     dotenv.load_dotenv()
 
     setup(MySQLDatabase(
