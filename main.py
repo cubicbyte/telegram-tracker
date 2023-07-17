@@ -6,11 +6,11 @@ from datetime import datetime
 from telethon import events
 from telethon import types
 from dotenv import load_dotenv
-from database import MySQLDatabase, User
+from database import MySQLDatabase, SQLiteDatabase, User
 
 load_dotenv()
 
-_db_type = os.getenv('DB_TYPE')
+_db_type = os.getenv('DB_TYPE').lower()
 if _db_type == 'mysql':
     db = MySQLDatabase(
         host=os.getenv('DB_HOST'),
@@ -18,6 +18,10 @@ if _db_type == 'mysql':
         user=os.getenv('DB_USER'),
         password=os.getenv('DB_PASSWORD'),
         database=os.getenv('DB_DATABASE'),
+    )
+elif _db_type == 'sqlite':
+    db = SQLiteDatabase(
+        path=os.getenv('DB_PATH'),
     )
 else:
     raise NotImplementedError(f'Unknown database type: {_db_type}')
@@ -36,7 +40,8 @@ async def handle_user_update(event: events.userupdate.UserUpdate.Event):
     _user = await client.get_entity(event.original_update.user_id)
     is_online = isinstance(event.original_update.status, types.UserStatusOnline)
     is_known = is_online or isinstance(event.original_update.status, types.UserStatusOffline)
-    time = datetime.now() if is_online or not is_known else event.original_update.status.was_online.astimezone(tz=None)
+    time = datetime.now().astimezone(tz=None) if is_online or not is_known else \
+           event.original_update.status.was_online.astimezone(tz=None)
     expires = event.original_update.status.expires.astimezone(tz=None) if is_online else None
 
     if _escape_emojis:
