@@ -27,7 +27,7 @@ The motivation for creating this project came from my desire to study data scien
 
 3. **Setup .env configuration file**: Copy `.env.example` to `.env` and modify it according to your needs. Update the `API_ID` and `API_HASH` with your Telegram API credentials (https://my.telegram.org):
 
-4. **Database setup**: Depending on the chosen database type, run either `scripts/setup-sqlite.sql` or `scripts/setup-mysql.sql` to set up the database structure. Default database is sqlite.
+4. **Database setup**: Depending on the chosen database type, run either `scripts/setup_mysql_db.py` or `scripts/setup_sqlite_db.py` to set up the database structure. Default database is sqlite.
 
 5. **Run the tracker**: Execute the main script:
 
