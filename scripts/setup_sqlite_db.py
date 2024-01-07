@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 # Needed to import from parent directory
 import sys
 from os.path import dirname, abspath

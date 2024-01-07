@@ -1,6 +1,8 @@
 # Telegram Tracker
 
-The Telegram Tracker is a Python project designed to monitor the online/offline activity of your Telegram contacts and store this data in a MySQL database.
+![python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)
+
+The Telegram Tracker is a Python project designed to monitor the online/offline activity of your Telegram contacts and store this data in a MySQL/SQLite database.
 
 The motivation for creating this project came from my desire to study data science and data analysis.
 

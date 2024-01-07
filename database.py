@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Optional
 from abc import ABC, abstractmethod
 from datetime import datetime
 from dataclasses import dataclass, fields
@@ -30,11 +31,11 @@ class User:
     id: int
     status_online: bool
     status_time: datetime
-    status_expires: datetime | None
-    username: str | None
+    status_expires: Optional[datetime]
+    username: Optional[str]
     first_name: str
-    last_name: str | None
-    phone: str | None
+    last_name: Optional[str]
+    phone: Optional[str]
 
     @property
     def status(self) -> UserStatus:
@@ -52,7 +53,7 @@ class BaseDatabase(ABC):
         pass
 
     @abstractmethod
-    def get_user(self, user_id: int) -> User | None:
+    def get_user(self, user_id: int) -> Optional[User]:
         pass
 
 
@@ -70,7 +71,7 @@ class MySQLDatabase(BaseDatabase):
             cur.callproc('saveUserUpdate', (user.id,))  # TODO: remove user update logging
         self.connection.commit()
 
-    def get_user(self, user_id: int) -> User | None:
+    def get_user(self, user_id: int) -> Optional[User]:
         with self.connection.cursor() as cur:
             cur.execute('SELECT * FROM users WHERE id = %s', (user_id,))
             res = cur.fetchone()
@@ -135,7 +136,7 @@ class SQLiteDatabase(BaseDatabase):
             phone=res['phone_number'],
         )
 
-    def _update_user(self, user: int):
+    def _update_user(self, user: User):
         cur = self.connection.execute(self._GET_USER_SQL, (user.id,))
         res = cur.fetchone()
 
@@ -173,7 +174,7 @@ class SQLiteDatabase(BaseDatabase):
         self._update_user(user)
         self._create_user_update(user)
 
-    def get_user(self, user_id: int) -> User | None:
+    def get_user(self, user_id: int) -> Optional[User]:
         cur = self.connection.execute(self._GET_USER_SQL, (user_id,))
         res = cur.fetchone()
 
