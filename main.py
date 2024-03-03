@@ -12,6 +12,15 @@ from database import MySQLDatabase, SQLiteDatabase, User
 
 load_dotenv()
 
+os.environ.setdefault('DB_TYPE', 'sqlite')
+os.environ.setdefault('DB_PATH', 'database.sqlite')
+os.environ.setdefault('ESCAPE_EMOJIS', 'false')
+os.environ.setdefault('LOG_USER_UPDATES', 'false')
+
+assert os.getenv('API_ID') is not None, 'API_ID is not set in .env file'
+assert os.getenv('API_HASH') is not None, 'API_HASH is not set in .env file'
+assert os.getenv('API_ID').isdigit(), 'API_ID is not a number'
+
 _db_type = os.getenv('DB_TYPE').lower()
 if _db_type == 'mysql':
     db = MySQLDatabase(
@@ -30,8 +39,8 @@ else:
 
 client = telethon.TelegramClient('status-collector', int(os.getenv('API_ID')), os.getenv('API_HASH'))
 update_event = events.UserUpdate()
-_log_user_updates = os.getenv('LOG_USER_UPDATES', 'false').lower() == 'true'
-_escape_emojis = os.getenv('ESCAPE_EMOJIS', 'false').lower() == 'true'
+_log_user_updates = os.getenv('LOG_USER_UPDATES').lower() == 'true'
+_escape_emojis = os.getenv('ESCAPE_EMOJIS').lower() == 'true'
 
 
 @client.on(update_event)
